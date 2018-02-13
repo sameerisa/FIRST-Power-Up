@@ -8,8 +8,7 @@ students and 5 mentors. We are planning to compete in two tournaments in Conneti
 We will use this site as documentation for our code and as a method of collaboration for our team members.  
 
 ### What is the current status of the robot?  
-We currently are in the process of trying to transition the electrical system from out prototype piece of wood
-to a nicely laid out piece of metal. Before this meeting, the robot was able to drive. Soon, we will have the
-electronics laid out and the robot working again.
+Our robot is fully working and ready for competition. It can drive, pick up and drop cubes, and score points for 
+us. We have a vertical arm driven by a lead screw with a pneumatic gripper, and a six-wheeled drive train.
   
 Anyway, that's all for now, and **so long, and thanks for all the fish!**
