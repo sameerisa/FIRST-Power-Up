@@ -14,12 +14,15 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.CameraServer;	// Import WPILib classes
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.AnalogGyro;
 
 public class Robot extends IterativeRobot {
 	private DifferentialDrive driveTrain;	// Create objects
@@ -27,8 +30,10 @@ public class Robot extends IterativeRobot {
 	private Joystick driveStick;
 	private Timer robotTimer;
 	private DoubleSolenoid solenoid;
+	private Solenoid armSolenoid;
 	private DigitalInput topLimitSwitch;
 	private DigitalInput bottomLimitSwitch;
+	private AnalogGyro gyro;
 	
 	boolean button3Pressed = false;	// Create variables to store joystick and limit switches values
 	boolean button5Pressed = false;
@@ -36,7 +41,12 @@ public class Robot extends IterativeRobot {
 	boolean button4Pressed = false;
 	boolean limitSwitchTop = false;
 	boolean limitSwitchBot = false;
+	boolean button12Pressed = false;
 	
+	double Kp = 0.03;
+	double angle;
+	
+	String gameData;
 
 	@Override
 	public void robotInit() {
@@ -56,41 +66,80 @@ public class Robot extends IterativeRobot {
 		solenoid = new DoubleSolenoid(0,1);
 		topLimitSwitch = new DigitalInput(0);
 		bottomLimitSwitch = new DigitalInput(1);
+		armSolenoid = new Solenoid(2);
+		gyro = new AnalogGyro(1);
 		
 		CameraServer.getInstance().startAutomaticCapture();
 	}
 	//
 	@Override
 	public void autonomousInit() {
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		
 		robotTimer.reset();
 		robotTimer.start();
+		
+		gyro.reset();
 	}
 	
 	@Override
 	public void autonomousPeriodic() {
-		if (robotTimer.get() < 0.5) {
-			driveTrain.arcadeDrive(0.75, 0.0); // drive forwards half speed
+		if(gameData.length() > 0) {
+        	if(gameData.charAt(0) == 'L') {
+        		// Left Auto Code
+        	} else {
+        		// Right Auto Code
+        	}
+        }
+		
+		if (robotTimer.get() < 1.0) {
+			armSolenoid.set(true);
 		} else {
-			driveTrain.stopMotor(); // stop robot
+			armSolenoid.set(false);
 		}
+		
+		if (robotTimer.get() > 1.0 && robotTimer.get() < 11.0) {
+			angle = gyro.getAngle();
+			driveTrain.arcadeDrive(0.5, angle*Kp);	// Drive Straight
+		} else if (robotTimer.get() > 11.0 && robotTimer.get() < 11.2) {
+			gyro.reset();	// Reset the angle of the gyro
+		} else if (robotTimer.get() > 11.2 && robotTimer.get() < 12.0) {
+			driveTrain.arcadeDrive(0.0, 0.0);	// Stop the robot
+		} else if (robotTimer.get() > 12.0 && gyro.getAngle() < 80) {
+			driveTrain.arcadeDrive(0.0, 0.5);	// Turn to 80deg (momentum to 90?)
+		} else {
+			driveTrain.arcadeDrive(0.0, 0.0);	// Stop at (90deg?)
+		}
+		
+		
 	}
 	
 	@Override
 	public void teleopPeriodic() {
-		double speed = driveStick.getRawAxis(3)+1;
+		double speed = driveStick.getRawAxis(3)+1.1;
 		//System.out.println(speed);
 		
-	 	driveTrain.arcadeDrive(driveStick.getY()/ speed, driveStick.getZ()/1.75);
+	 	driveTrain.arcadeDrive(-driveStick.getY()/ speed, driveStick.getZ()/1.75);
 	 	
 	 	
 		button3Pressed = driveStick.getRawButton(3);
 		button5Pressed = driveStick.getRawButton(5);
 		button6Pressed = driveStick.getRawButton(6);
 		button4Pressed = driveStick.getRawButton(4);
+		button12Pressed = driveStick.getRawButton(12);
 		
 		//
 		limitSwitchTop = topLimitSwitch.get();
 		limitSwitchBot = bottomLimitSwitch.get();
+		
+		if(button12Pressed) 
+		{
+			armSolenoid.set(true);
+		}
+		else 
+		{
+			armSolenoid.set(false);
+		}
 		
 		if (button5Pressed && !button3Pressed && limitSwitchTop) {	// If button 5 is pressed and top limit switch is not activated,
 				verticalArm.set(ControlMode.PercentOutput, 0.5);	// Move the arm up
