@@ -28,6 +28,8 @@ public class Robot extends IterativeRobot {
 	private DifferentialDrive driveTrain;	// Drive train
 	private TalonSRX verticalArm;	// Vertical motor
 	private Joystick driveStick;	// Joystick
+	private Joystick armGamepad;	// Gamepad
+	//private Joystick backupGamepad;	// Backup Gamepad
 	private Timer robotTimer;	// Timer
 	private DoubleSolenoid gripperSolenoid;	// Gripper pneumatic solenoid
 	private Solenoid armSolenoid;	// Raising arm solenoid
@@ -47,6 +49,10 @@ public class Robot extends IterativeRobot {
 	boolean jumperA = false;	// Position jumper A, failsafe false
 	boolean jumperB = false;	// Position jumper B, failsafe false
 	
+	double speed = 0.5;
+	double driveY = 0.0;
+	double driveX = 0.0;
+	
 	int robotLocation = 0;	// Robot location, failsafe 0
 	
 	String gameData;	// Game data, failsafe empty
@@ -65,6 +71,8 @@ public class Robot extends IterativeRobot {
 		driveTrain = new DifferentialDrive(m_left, m_right);	// Create drivetrain with Spark groups
 		verticalArm = new TalonSRX(0);	// Initialize vertical arm motor
 		driveStick = new Joystick(0);	// Initialize joystick
+		armGamepad = new Joystick(1);	// Initialize gamepad
+		//backupGamepad = new Joystick(2);	// Initialize backup gamepad
 		robotTimer = new Timer();	// Initialize timer
 		gripperSolenoid = new DoubleSolenoid(0,1);	// Initialize gripper solenoids
 		armSolenoid = new Solenoid(2);	// Initialize arm raising solenoid
@@ -208,13 +216,25 @@ public class Robot extends IterativeRobot {
 				break;
     		}
     	}
+		
+		System.out.println("Robot Position: " + robotLocation + "\tGame Data: " + gameData + "\tBottom Limit Switch Activated: " + limitSwitchBot + "\tTop Limit Switch Activated: " + limitSwitchTop + "\tVertical Arm Speed: " + verticalArm.getMotorOutputPercent() * 100 + "%");
     }	
 	
 	@Override
 	public void teleopPeriodic() {	// Periodic teleop code (run every (10ms?) while teleop is active)
-		double speed = driveStick.getRawAxis(3)+1.1;	// Get value of joystick throttle
+		//if (driveStick.getName() == "0 Logitech Extreme 3D" ) {
+			speed = driveStick.getRawAxis(3) + 1.1;	// Get value of joystick throttle
+			driveY = -driveStick.getY() / speed;
+			driveX = driveStick.getZ() / 1.75;
+		/*} else if (armGamepad.getName() == "1 Controller (Gamepad F310)") {
+			driveY = armGamepad.getRawAxis(1) / 0.5;
+			driveX = armGamepad.getRawAxis(0) / 0.5;
+		} else if (backupGamepad.getName() == "2 Controller (XBOX 360 For Windows)") {
+			driveY = backupGamepad.getRawAxis(1) / 0.5;
+			driveX = backupGamepad.getRawAxis(0) / 0.5;
+		}*/
 		
-	 	driveTrain.arcadeDrive(-driveStick.getY()/ speed, driveStick.getZ()/1.75);	// Drive the robot
+	 	driveTrain.arcadeDrive(driveY, driveX);	// Drive the robot
 	 	
 	 	// Get the values of the buttons
 		button3Pressed = driveStick.getRawButton(3);
@@ -222,6 +242,20 @@ public class Robot extends IterativeRobot {
 		button5Pressed = driveStick.getRawButton(5);
 		button6Pressed = driveStick.getRawButton(6);
 		button12Pressed = driveStick.getRawButton(12);
+		
+		//if (armGamepad.getName() == "1 Controller (Gamepad F310)") {
+			if (armGamepad.getPOV(0) == 180) {button3Pressed = true;}
+		 	if (armGamepad.getPOV(0) == 0) {button5Pressed = true;}
+		 	if (armGamepad.getRawButton(2) == true) {button4Pressed = true;}
+		 	if (armGamepad.getRawButton(4) == true) {button6Pressed = true;}
+		 	if (armGamepad.getRawButton(8) == true) {button12Pressed = true;}
+		/*} else if (backupGamepad.getName() == "2 Controller (XBOX 360 For Windows)") {
+			if (backupGamepad.getPOV(0) == 180) {button3Pressed = true;}
+		 	if (backupGamepad.getPOV(0) == 0) {button5Pressed = true;}
+		 	if (backupGamepad.getRawButton(2) == true) {button4Pressed = true;}
+		 	if (backupGamepad.getRawButton(4) == true) {button6Pressed = true;}
+		 	if (backupGamepad.getRawButton(8) == true) {button12Pressed = true;}
+		}*/
 		
 		// Get the values of the limit switches
 		limitSwitchTop = topLimitSwitch.get();
@@ -251,5 +285,6 @@ public class Robot extends IterativeRobot {
 			gripperSolenoid.set(DoubleSolenoid.Value.kOff);	// ...stop moving the gripper
 		}
 		
+		System.out.println("OrigPos: " + robotLocation + "\tButton 3 Pressed: " + button3Pressed + "\tButton 4 Pressed: " + button4Pressed + "\tButton 5 Pressed: " + button5Pressed + "\tButton 6 Pressed: " + button6Pressed + "\tButton 12 Pressed: " + button12Pressed + "\tBottom Limit Switch Activated: " + limitSwitchBot + "\tTop Limit Switch Activated: " + limitSwitchTop  + "\tVertical Arm Speed: " + verticalArm.getMotorOutputPercent() * 100 + "%");
 	}
 }
