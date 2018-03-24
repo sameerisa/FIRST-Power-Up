@@ -44,6 +44,7 @@ public class Robot extends IterativeRobot {
 	boolean button5Pressed = false;	// Button 5, failsafe false
 	boolean button6Pressed = false;	// Button 6, failsafe false
 	boolean button12Pressed = false;	// Button 12, failsafe false
+	boolean button11Pressed = false;
 	boolean limitSwitchTop = true;	// Top limit switch, failsafe true
 	boolean limitSwitchBot = true;	// Bottom limit switch, failsafe true
 	boolean jumperA = false;	// Position jumper A, failsafe false
@@ -271,6 +272,8 @@ public class Robot extends IterativeRobot {
 		button5Pressed = driveStick.getRawButton(5);
 		button6Pressed = driveStick.getRawButton(6);
 		button12Pressed = driveStick.getRawButton(12);
+		button11Pressed = driveStick.getRawButton(11);
+		
 		
 		//if (armGamepad.getName() == "1 Controller (Gamepad F310)") {
 			if (armGamepad.getPOV(0) == 180) {button3Pressed = true;}
@@ -289,7 +292,15 @@ public class Robot extends IterativeRobot {
 		// Get the values of the limit switches
 		limitSwitchTop = topLimitSwitch.get();
 		limitSwitchBot = bottomLimitSwitch.get();
-		
+		// test code********************************************************************************//
+		if(button11Pressed)
+		{
+			robotTimer.reset();
+			robotTimer.start();
+			if(robotTimer<=1)
+				driveTrain.arcadeDrive(1,0);
+		}
+		//*******************************************************************************************//
 		if (button12Pressed) {	// If button 12 is pressed...
 			armSolenoid.set(true);	// ...raise the arm
 		} else {	// If button 12 is not pressed...
