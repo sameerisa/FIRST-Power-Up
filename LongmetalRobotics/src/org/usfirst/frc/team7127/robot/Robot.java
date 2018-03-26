@@ -44,7 +44,12 @@ public class Robot extends IterativeRobot {
 	boolean button5Pressed = false;	// Button 5, failsafe false
 	boolean button6Pressed = false;	// Button 6, failsafe false
 	boolean button12Pressed = false;	// Button 12, failsafe false
+	// Test code
 	boolean button11Pressed = false;
+	boolean button10Pressed = false;
+	boolean button9Pressed = false;
+	boolean button8Pressed = false;
+	//
 	boolean limitSwitchTop = true;	// Top limit switch, failsafe true
 	boolean limitSwitchBot = true;	// Bottom limit switch, failsafe true
 	boolean jumperA = false;	// Position jumper A, failsafe false
@@ -273,6 +278,11 @@ public class Robot extends IterativeRobot {
 		button6Pressed = driveStick.getRawButton(6);
 		button12Pressed = driveStick.getRawButton(12);
 		button11Pressed = driveStick.getRawButton(11);
+		button10Pressed = driveStick.getRawButton(10);
+		button9Pressed = driveStick.getRawButton(9);
+		button8Pressed = driveStick.getRawButton(8);
+		
+		
 		
 		
 		//if (armGamepad.getName() == "1 Controller (Gamepad F310)") {
@@ -293,12 +303,42 @@ public class Robot extends IterativeRobot {
 		limitSwitchTop = topLimitSwitch.get();
 		limitSwitchBot = bottomLimitSwitch.get();
 		// test code********************************************************************************//
+		if(button8Pressed)
+		{
+			robotTimer.reset();
+			robotTimer.start();
+			if(robotTimer<=1)
+				driveTrain.arcadeDrive(.7,0);
+			else
+				driveTrain.arcadeDrive(0,0)
+		}
+		if(button9Pressed)
+		{
+			robotTimer.reset();
+			robotTimer.start();
+			if(robotTimer<=1)
+				driveTrain.arcadeDrive(.8,0);
+			else
+				driveTrain.arcadeDrive(0,0);
+		}
+		if(button10Pressed)
+		{
+			robotTimer.reset();
+			robotTimer.start();
+			if(robotTimer<=1)
+				driveTrain.arcadeDrive(.9,0);
+			else
+				driveTrain.arcadeDrive(0,0);
+			
+		}
 		if(button11Pressed)
 		{
 			robotTimer.reset();
 			robotTimer.start();
 			if(robotTimer<=1)
 				driveTrain.arcadeDrive(1,0);
+			else
+				driveTrain.arcadeDrive(0,0);
 		}
 		//*******************************************************************************************//
 		if (button12Pressed) {	// If button 12 is pressed...
