@@ -32,7 +32,7 @@ public class Robot extends IterativeRobot {
 	//private Joystick backupGamepad;	// Backup Gamepad
 	private Timer robotTimer;	// Timer
 	private DoubleSolenoid gripperSolenoid;	// Gripper pneumatic solenoid
-	private Solenoid armSolenoid;	// Raising arm solenoid
+	private Solenoid armSolenoid;	// Deployment of Arm from start to forward positions solenoid
 	private DigitalInput topLimitSwitch;	// top limit switch
 	private DigitalInput bottomLimitSwitch;	// bottom limit switch
 	private DigitalInput jumpA;	// Position jumper a
@@ -43,18 +43,21 @@ public class Robot extends IterativeRobot {
 	boolean button4Pressed = false;	// Button 4, failsafe false
 	boolean button5Pressed = false;	// Button 5, failsafe false
 	boolean button6Pressed = false;	// Button 6, failsafe false
-	boolean button12Pressed = false;	// Button 12, failsafe false
-	// Test code
+	boolean button12Pressed = false; // Button 12, failsafe false
+	
+	// Test code for drive speed vs distance testing.
 	boolean button11Pressed = false;
 	boolean button10Pressed = false;
 	boolean button9Pressed = false;
 	boolean button8Pressed = false;
-	//
+	
+	// Code for Lead Screw Motor Driving controls.
 	boolean limitSwitchTop = true;	// Top limit switch, failsafe true
 	boolean limitSwitchBot = true;	// Bottom limit switch, failsafe true
 	boolean jumperA = false;	// Position jumper A, failsafe false
 	boolean jumperB = false;	// Position jumper B, failsafe false
 	
+	// Controls of our Drive Motors
 	double speed = 0.5;
 	double driveY = 0.0;
 	double driveX = 0.0;
@@ -97,14 +100,14 @@ public class Robot extends IterativeRobot {
 		jumperB = !jumpB.get();
 		
 		// Set robotLocation based on jumpers
-		if (jumperA && !jumperB) {	// 2
+		if (jumperA && !jumperB) {	      	// 2
 			robotLocation = 1;
 		} else if (jumperA && jumperB) {	// 2 & 3
 			robotLocation = 2;
 		} else if (!jumperA && jumperB) {	// 3
 			robotLocation = 3;
-		} else {	// None
-			robotLocation = 0;	// Failsafe
+		} else {				// None = Failsafe
+			robotLocation = 0;		
 		}
 		
 		robotTimer.reset();	// Set timer to 0
@@ -112,16 +115,16 @@ public class Robot extends IterativeRobot {
 	}
 	
 	@Override
-	public void autonomousPeriodic() {	// Periodic autonomous code (run every (10ms?) while autonomous is active)
+	public void autonomousPeriodic() {	// Autonomous period (first 15 seconds) Code
 		limitSwitchBot = bottomLimitSwitch.get();	// Get value of bottom limit switch
 		
-		/*if (robotTimer.get() < 0.0 && limitSwitchBot) {	// Move arm down
+		/*if (robotTimer.get() < 0.0 && limitSwitchBot) {	// In case we need to move arm down at start of match
 			verticalArm.set(ControlMode.PercentOutput, -0.5);
 		} else {
 			verticalArm.set(ControlMode.PercentOutput, 0.0);
 		}*/
 		
-		if (robotTimer.get() > 1.0 && robotTimer.get() < 2.0) {	// Deploy arm for 0.3 seconds
+		if (robotTimer.get() > 1.0 && robotTimer.get() < 2.0) {	// Push Arm Deployment Cylinders for 1.0 seconds
 			armSolenoid.set(true);
 		} else {
 			armSolenoid.set(false);
@@ -133,17 +136,15 @@ public class Robot extends IterativeRobot {
     				driveTrain.arcadeDrive(0.0, 0.0);	// ...don't drive
     			break;
     			case 1:	// Left Switch ...and we are to the left...
-    				if (robotTimer.get() > 1.3 && robotTimer.get() < 4.0) {	// ...and the time is between 0.3 and 1 second(s)...
-    					driveTrain.arcadeDrive(0.7, 0.0);	// ...drive straight at 0.7 speed
-    				/*} else if (robotTimer.get() > 3.3 && robotTimer.get() < 14.0) {	// ...and the time is between 4 and 5.3 seconds...
-    					driveTrain.arcadeDrive(0.0, -0.6);	// ... correct the drift
-    				*/} else if (robotTimer.get() > 4 && robotTimer.get() < 4.9) {	// ...and the time is between 4 and 5.3 seconds...
-    					driveTrain.arcadeDrive(0.0, 0.6);	
-    				} else if (robotTimer.get() > 5 && robotTimer.get() < 6) {
-    					driveTrain.arcadeDrive(0.6, 0.0);
-    				} else if (robotTimer.get() > 6 && robotTimer.get() < 6.1) {	// ... and the time is between 5.3 and 5.4 seconds...
+    				if (robotTimer.get() > 1.3 && robotTimer.get() < 4.0) {	// ...and the time is between 1.3 and 4 second(s)...
+    					driveTrain.arcadeDrive(0.7, 0.0);		// ...drive straight at 0.7 speed
+    				*/} else if (robotTimer.get() > 4 && robotTimer.get() < 4.9) {	// ...and the time is between 4 and 4.9 seconds...
+    					driveTrain.arcadeDrive(0.0, 0.6);		// ...rotate left approx 90deg.
+    				} else if (robotTimer.get() > 5 && robotTimer.get() < 6) { // ...drive 1 second to guarantee parking up at the switch fence
+    					driveTrain.arcadeDrive(0.6, 0.0);		//.. drive straight at the lower 0.6 speed
+    				} else if (robotTimer.get() > 6 && robotTimer.get() < 6.1) {	// ... and the time is between 6.0 and 6.1 seconds...
     						gripperSolenoid.set(DoubleSolenoid.Value.kForward);	// ...drop the cube
-    				} else {	// ...and is none of the above (more than 5.4 seconds)...
+    				} else {	// ...and is none of the above...
     					driveTrain.arcadeDrive(0.0, 0.0);	// ...stop
     				}
     			break;
@@ -166,12 +167,11 @@ public class Robot extends IterativeRobot {
     			break;
     			case 3:  // Left Switch ... and we are to the right...
     				
-    				if (robotTimer.get() > 1.3 && robotTimer.get() < 4) {	// ...and the time is between 0.3 and 1 second(s)...
-    					driveTrain.arcadeDrive(0.7, 0.0);	// ...drive straight at 0.7 speed
-    				/*} else if (robotTimer.get() > 3.3 && robotTimer.get() < 14.0) {	// ...and the time is between 4 and 5.3 seconds...
-    					driveTrain.arcadeDrive(0.0, -0.6);	// ... correct the drift
+    				if (robotTimer.get() > 1.3 && robotTimer.get() < 4) {	// ...and the time is between 1.3 and 4 second(s)...
+    					driveTrain.arcadeDrive(0.7, 0.0);		// ...drive straight at 0.7 speed
     				*/} else if (robotTimer.get() > 4 && robotTimer.get() < 5.8) {	// ...and the time is between 4 and 5.3 seconds...
-    					driveTrain.arcadeDrive(0.0, -0.6);	
+    					driveTrain.arcadeDrive(0.0, -0.6);			// ...turn around by rotating right.
+				//.. all code below this was commented out for finals....
     				/*} else if (robotTimer.get() > 6.2 && robotTimer.get() < 10.2) {
     					driveTrain.arcadeDrive(0.7, 0.0);
     				}else if (robotTimer.get() > 5.4 && robotTimer.get() < 5.5) {	// ... and the time is between 5.3 and 5.4 seconds...
@@ -198,18 +198,14 @@ public class Robot extends IterativeRobot {
     				driveTrain.arcadeDrive(0.0, 0.0);	// ... do not drive
     			break;
 				case 1:	// Right Switch ...and we are to the left...
-					if (robotTimer.get() > 1.3 && robotTimer.get() < 4) {	// ...and the time is between 0.3 and 1 second(s)...
+					if (robotTimer.get() > 1.3 && robotTimer.get() < 4) {	// ...and the time is between 1.3 and 4 second(s)...
     					driveTrain.arcadeDrive(0.7, 0.0);	// ...drive straight at 0.7 speed
-    				/*} else if (robotTimer.get() > 3.3 && robotTimer.get() < 14.0) {	// ...and the time is between 4 and 5.3 seconds...
-    					driveTrain.arcadeDrive(0.0, -0.6);	// ... correct the drift
-    				*/} else if (robotTimer.get() > 4 && robotTimer.get() < 5.8) {	// ...and the time is between 4 and 5.3 seconds...
-    					driveTrain.arcadeDrive(0.0, 0.6);	
-    				
-    					driveTrain.arcadeDrive(0.0, 0.0);	// ...stop
+    				*/} else if (robotTimer.get() > 4 && robotTimer.get() < 5.8) {	// ...and the time is between 4 and 5.8 seconds...
+    					driveTrain.arcadeDrive(0.0, 0.6);			// ...turn around 180deg to the left.
+    				//.. all code below this was commented out for finals....	
+				/*	driveTrain.arcadeDrive(0.0, 0.0);	// ...stop
     				}
-					
-					
-					/*if (robotTimer.get() > 1.3 && robotTimer.get() < 3.8) {	// ...and the time is between 0.3 and 1 second(s)...
+				/*if (robotTimer.get() > 1.3 && robotTimer.get() < 3.8) {	// ...and the time is between 0.3 and 1 second(s)...
     					driveTrain.arcadeDrive(0.7, 0.0);	// ...drive straight at 0.7 speed
     				/*} else if (robotTimer.get() > 3.3 && robotTimer.get() < 14.0) {	// ...and the time is between 4 and 5.3 seconds...
     					driveTrain.arcadeDrive(0.0, -0.6);	// ... correct the drift
@@ -235,17 +231,15 @@ public class Robot extends IterativeRobot {
     				}
 				break;
 				case 3:	// Right Switch  ...and we are to the right...
-					if (robotTimer.get() > 1.3 && robotTimer.get() < 4.0) {	// ...and the time is between 0.3 and 1 second(s)...
-    					driveTrain.arcadeDrive(0.7, 0.0);	// ...drive straight at 0.7 speed
-    				/*} else if (robotTimer.get() > 3.3 && robotTimer.get() < 14.0) {	// ...and the time is between 4 and 5.3 seconds...
-    					driveTrain.arcadeDrive(0.0, -0.6);	// ... correct the drift
-    				*/} else if (robotTimer.get() > 4 && robotTimer.get() < 4.9) {	// ...and the time is between 4 and 5.3 seconds...
-    					driveTrain.arcadeDrive(0.0, -0.6);	
-    				} else if (robotTimer.get() > 5 && robotTimer.get() < 6) {
-    					driveTrain.arcadeDrive(0.6, 0.0);
-    				} else if (robotTimer.get() > 6 && robotTimer.get() < 6.1) {	// ... and the time is between 5.3 and 5.4 seconds...
+					if (robotTimer.get() > 1.3 && robotTimer.get() < 4.0) {	// ...and the time is between 1.3 and 4 second(s)...
+    					driveTrain.arcadeDrive(0.7, 0.0);			// ...drive straight at 0.7 speed
+    				*/} else if (robotTimer.get() > 4 && robotTimer.get() < 4.9) {	// ...and the time is between 4 and 4.9 seconds...
+    					driveTrain.arcadeDrive(0.0, -0.6);			// ...rotate right around 90deg approx
+    				} else if (robotTimer.get() > 5 && robotTimer.get() < 6) {	// ...drive straight at the slower 0.6 speed to pull up to switch fence
+    					driveTrain.arcadeDrive(0.6, 0.0);			// ...
+    				} else if (robotTimer.get() > 6 && robotTimer.get() < 6.1) {	// ... and the time is between 6.0 and 6.1 seconds...
     						gripperSolenoid.set(DoubleSolenoid.Value.kForward);	// ...drop the cube
-    				} else {	// ...and is none of the above (more than 5.4 seconds)...
+    				} else {	// ...and is none of the above (more than 6.1 seconds)...
     					driveTrain.arcadeDrive(0.0, 0.0);	// ...stop
     				}
 				break;
@@ -256,7 +250,7 @@ public class Robot extends IterativeRobot {
     }	
 	
 	@Override
-	public void teleopPeriodic() {	// Periodic teleop code (run every (10ms?) while teleop is active)
+	public void teleopPeriodic() {	// Teleoperator period code
 		//if (driveStick.getName() == "0 Logitech Extreme 3D" ) {
 			speed = driveStick.getRawAxis(3) + 1.1;	// Get value of joystick throttle
 			driveY = -driveStick.getY() / speed;
