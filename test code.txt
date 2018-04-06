@@ -1,0 +1,195 @@
+c LL LR
+if(robotTimer.get()>1 && robotTimer.get()<1.75)
+{
+	driveTrain.arcadeDrive(.8, 0.0);
+}else if(robotTimer.get()>1.75 && robotTimer.get()<2.56)
+{
+	driveTrain.arcadeDrive(0,-.7);
+}else if (robotTimer.get()>2.56 && robotTImer.get()<3.185)
+{
+	driveTrain.arcadeDrive(.8, 0.0);
+}else if(robotTimer.get()>3.185 && robotTimer.get()<3.985)
+{
+	driveTrain.arcadeDrive(0, .7);
+}else if(robotTImer.get()>3.985 && robotTimer.get()<4.735)
+{
+	driveTrain.arcadeDrive(.8, 0.0);
+
+}else if(robotTImer.get()>4.735 && robotTimer.get()<4.8)
+{
+	gripperSolenoid.set(DoubleSolenoid.Value.kFoward);
+}
+else if(robotTimer.get()>4.8 && robotTimer.get()<5.55)
+{
+	driveTrain.arcadeDrive(-.8, 0.0);
+}else if(robotTimer.get()>5.55 && robotTimer.get<6.35)
+{	
+	if(limitSwitchBot)
+	{
+	verticalArm.set(ControlMode.PercentOutput, 0.9);
+	}
+	driveTrain.arcadeDrive(0, .7);
+}else if(robotTimer.get()>6.35 && robotTimer.get()<6.975)
+{
+	driveTrain.arcadeDrive(.8, 0);
+}else if(robotTimer.get()>6.975 && robotTimer.get()<7.775)
+{
+	driveTrain.arcadeDrive(0, -.7)
+}
+else if(robotTimer.get()>7.775 && robotTimer.get()<8.15)
+{
+	driveTrain.arcadeDrive(.8 , 0);
+}else if(robotTimer.get()>8.15 && robotTimer.get()<8.25)
+{
+	gripperSolenoid.set(DoubleSolenoid.Value.kReverse);
+}else if(robotTimer.get()>8.25 && robotTimer.get()<8.625)
+{
+	driveTrain.arcadeDrive(-.8 , 0);
+}else if(robotTimer.get()>8.625 && robotTimer.get()<9.425)
+{	
+	driveTrain.arcadeDrive(0,-.7);
+}else if(robotTimer.get()>9.425 && robotTimer.get()<9.8)
+{
+	driveTrain.arcadeDrive(.8,0);
+}else if(robotTimer.get()>9.8, robotTimer.get()<10.6)
+{
+	driveTrain.arcadeDrive(0,-.7);
+}else if(robotTimer.get()>10.6 && robotTimer.get()<11.2875)
+{
+	driveTrain.arcadeDrive(.8,0);
+}else if(robotTimer.get()>11.2875 && robotTimer.get()<12.2875)
+{
+	push cube
+}
+
+
+
+
+R LL LR
+if(robotTimer.get()>1 && robotTimer.get()<2.5625)
+{
+	driveTrain.arcadeDrive(.8, 0);
+}else if(robotTimer.get()>2.5625 && robotTimer.get()<3.5)
+{
+	driveTrain.arcadeDrive(-.8,0);
+}else if(robotTimer.get()>3.5 && robotTimer.get()<4.3)
+{
+	driveTrain.arcadeDrive(0, -.7)
+}else if(robotTimer.get()>4.3 && robotTimer.get()<6.1125)
+{
+	driveTrain.arcadeDrive(.8, 0);
+}else if(robotTimer.get()>6.1125 && robotTimer.get()<6.9125)
+{
+	driveTrain.arcadeDrive(0,.7);
+}else if(robotTimer.get()>6.9125 && robotTimer.get()<7.725)
+{
+	driveTrain.arcadeDrive(.8,0);
+}else if(robotTimer.get()>6.9125 && robotTimer.get<7)
+{
+	gripperSolenoid.set(DoubleSolenoid.Value.kFoward);
+}
+
+
+
+
+
+L RR RL
+if(robotTimer.get()>1 && robotTimer.get()<2.5625)
+{
+	driveTrain.arcadeDrive(.8, 0);
+}else if(robotTimer.get()>2.5625 && robotTimer.get()<3.5)
+{
+	driveTrain.arcadeDrive(-.8,0);
+}else if(robotTimer.get()>3.5 && robotTimer.get()<4.3)
+{
+	driveTrain.arcadeDrive(0,.7);
+}else if(robotTimer.get>4.3 && robotTimer.get<6.1125)
+{
+	driveTrain.arcadeDrive(.8,0);
+}else if(robotTimer.get>6.1125 && robotTimer.get<6.9125)
+{
+	driveTrain.arcadeDrive(0,-.7);
+}else if(robotTimer.get>6.9125 && robotTimer.get<7.725)
+{
+	driveTrain.arcadeDrive(.8,0);
+}else if(robotTimer.get>7.725 && robotTimer.get<7.825)
+{
+	gripperSolenoid.set(DoubleSolenoid.Value.kFoward);
+}
+
+
+C RR RL
+	if(robotTimer.get()>1 && robotTimer.get()<1.75)
+{
+	driveTrain.arcadeDrive(.8, 0.0);
+}else if(robotTimer.get()>1.75 && robotTimer.get()<2.56)
+{
+	driveTrain.arcadeDrive(0,.7);
+}else if (robotTimer.get()>2.56 && robotTImer.get()<3.185)
+{
+	driveTrain.arcadeDrive(.8, 0.0);
+}else if(robotTimer.get()>3.185 && robotTimer.get()<3.985)
+{
+	driveTrain.arcadeDrive(0, -.7);
+}else if(robotTImer.get()>3.985 && robotTimer.get()<4.735)
+{
+	driveTrain.arcadeDrive(.8, 0.0);
+
+}else if(robotTImer.get()>4.735 && robotTimer.get()<4.8)
+{
+	gripperSolenoid.set(DoubleSolenoid.Value.kFoward);
+}
+else if(robotTimer.get()>4.8 && robotTimer.get()<5.55)
+{
+	driveTrain.arcadeDrive(-.8, 0.0);
+}else if(robotTimer.get()>5.55 && robotTimer.get<6.35)
+{	
+	if(limitSwitchBot)
+	{
+	verticalArm.set(ControlMode.PercentOutput, 0.9);
+	}
+	driveTrain.arcadeDrive(0, -.7);
+}else if(robotTimer.get()>6.35 && robotTimer.get()<6.975)
+{
+	driveTrain.arcadeDrive(.8, 0);
+}else if(robotTimer.get()>6.975 && robotTimer.get()<7.775)
+{
+	driveTrain.arcadeDrive(0, .7)
+}
+else if(robotTimer.get()>7.775 && robotTimer.get()<8.15)
+{
+	driveTrain.arcadeDrive(.8 , 0);
+}else if(robotTimer.get()>8.15 && robotTimer.get()<8.25)
+{
+	gripperSolenoid.set(DoubleSolenoid.Value.kReverse);
+}else if(robotTimer.get()>8.25 && robotTimer.get()<8.625)
+{
+	driveTrain.arcadeDrive(-.8 , 0);
+}else if(robotTimer.get()>8.625 && robotTimer.get()<9.425)
+{	
+	driveTrain.arcadeDrive(0,.7);
+}else if(robotTimer.get()>9.425 && robotTimer.get()<9.8)
+{
+	driveTrain.arcadeDrive(.8,0);
+}else if(robotTimer.get()>9.8, robotTimer.get()<10.6)
+{
+	driveTrain.arcadeDrive(0,.7);
+}else if(robotTimer.get()>10.6 && robotTimer.get()<11.2875)
+{
+	driveTrain.arcadeDrive(.8,0);
+}else if(robotTimer.get()>11.2875 && robotTimer.get()<12.2875)
+{
+	push cube
+}
+
+
+
+
+
+private void grab()
+{
+	gripperSolenoid.set(DoubleSolenoid.Value.kForward);
+	
+
+}
+
