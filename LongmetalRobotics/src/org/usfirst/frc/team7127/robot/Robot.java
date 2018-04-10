@@ -147,6 +147,9 @@ public class Robot extends IterativeRobot {
 		} else {
 			armSolenoid.set(false);
 		}
+
+
+
 		if(robotTimer.get()>1.4 && robotTimer.get()<2.4) 
 		{
 			if(limitSwitchTop) 
@@ -155,26 +158,95 @@ public class Robot extends IterativeRobot {
 			}
 			else {verticalArm.set(ControlMode.PercentOutput, 0);}
 		}
+
 		if(gameData.length() > 0 &&  gameData.charAt(0) == 'L') {	// If our switch is to the left...
     		switch (robotLocation) {
     			case 0:	// ...and we do not know where we are...
     				driveTrain.arcadeDrive(0.0, 0.0);	// ...don't drive
     			break;
     			case 1:	// Left Switch ...and we are to the left...
-    				if (robotTimer.get() > 1.3 && robotTimer.get() < 4.4) {	// ...and the time is between 0.3 and 1 second(s)...
-    					driveTrain.arcadeDrive(0.7, 0.0);	// ...drive straight at 0.7 speed
-    				} else if (robotTimer.get() > 4.4 && robotTimer.get() < 6.2) {	// ...and the time is between 4 and 5.3 seconds...
-    					driveTrain.arcadeDrive(0.0, 0.6);	
-    				} else if (robotTimer.get() > 6.2 && robotTimer.get() < 7.2) {
-    					driveTrain.arcadeDrive(0.6, 0.0);
-    				} else if (robotTimer.get() > 7.2 && robotTimer.get() < 7.3) {	// ... and the time is between 5.3 and 5.4 seconds...
-    						gripperSolenoid.set(DoubleSolenoid.Value.kForward);	// ...drop the cube
-    				} else {	// ...and is none of the above (more than 5.4 seconds)...
-    					driveTrain.arcadeDrive(0.0, 0.0);	// ...stop
-    				}
-    			break;
+					if (robotTimer.get() > 1.3 && robotTimer.get() < 4.0) {	// ...and the time is between 0.3 and 1 second(s)...
+					driveTrain.arcadeDrive(0.7, 0.0);	// ...drive straight at 0.7 speed
+				/*} else if (robotTimer.get() > 3.3 && robotTimer.get() < 14.0) {	// ...and the time is between 4 and 5.3 seconds...
+					driveTrain.arcadeDrive(0.0, -0.6);	// ... correct the drift
+				*/} else if (robotTimer.get() > 4 && robotTimer.get() < 4.9) {	// ...and the time is between 4 and 5.3 seconds...
+					driveTrain.arcadeDrive(0.0, 0.8);
+				} else if (robotTimer.get() > 5 && robotTimer.get() < 6) {
+					driveTrain.arcadeDrive(0.6, 0.0);
+				} else if (robotTimer.get() > 6 && robotTimer.get() < 6.1) {	// ... and the time is between 5.3 and 5.4 seconds...
+						gripperSolenoid.set(DoubleSolenoid.Value.kForward);	// ...drop the cube
+				}
+				else {	// ...and is none of the above (more than 5.4 seconds)...
+					if(gameData.charAt(1) == 'R' || improvedcode){
+					if(robotTimer.get()>6.1 && robotTimer.get()<6.8)
+					{
+						driveTrain.arcadeDrive(-.6,0);
+					}else if(robotTimer.get()>6.8 && robotTimer.get()<7.7)
+					{
+						if(limitSwitchBot)
+						{
+								verticalArm.set(ControlMode.PercentOutput, -0.9);
+						}else
+						{
+							verticalArm.set(ControlMode.PercentOutput, 0);
+						}
+
+						driveTrain.arcadeDrive(0, -.8);
+					}else if(robotTimer.get()>7.7 && robotTimer.get()<8.4)
+					{
+						driveTrain.arcadeDrive(.7,0);
+					}else if(robotTimer.get()>8.4 && robotTimer.get()<9.3)
+					{
+						driveTrain.arcadeDrive(0, .8);
+					}else if(robotTimer.get()>9.3 && robotTimer.get()<9.6)
+					{
+						driveTrain.arcadeDrive(.7 , 0);
+					}else if(robotTimer.get()>9.6 && robotTimer.get()<10.5)
+					{
+						driveTrain.arcadeDrive(0, .8);
+					}else if(robotTimer.get()>10.5 && robotTimer.get()<11)
+					{
+						driveTrain.arcadeDrive(.6, 0);
+					}else if(robotTimer.get()>11 && robotTimer.get<11.4)
+					{
+						gripperL.set(ControlMode.PercentOutput, 1.0);
+						gripperR.set(ControlMode.PercentOutput, -1.0);//in ?
+					}else if(robotTimer.get()>11.3 && robotTimer.get()<11.4)
+					{
+						gripperSolenoid.set(DoubleSolenoid.Value.kReverse);
+					}else if(robotTimer.get()>11.4 && robotTimer.get()<12)
+					{
+						if(limitSwitchTop)
+						{
+							verticalArm.set(ControlMode.PercentOutput, .9);
+						}else
+						{
+							verticalArm.set(ControlMode.PercentOutput, 0);
+						}
+
+					}else if(robotTimer.get()>12 && robotTimer.get()<12.5)
+					{
+						driveTrain.arcadeDrive(.6,0);
+					}else if(robotTimer.get()>12.5 && robotTimer.get()<12.6)
+					{
+						gripperSolenoid.set(DoubleSolenoid.Value.kForward);
+
+					}
+				}
+
+					//*****************************************************
+					else {	// ...and is none of the above (more than 5.4 seconds)...
+						driveTrain.arcadeDrive(0.0, 0.0);	// ...stop
+						verticalArm.set(ControlMode.PercentOutput, 0);
+					}
+				}
+				//***************************************************** second drop
+
+			break;
+		
+    		
     			case 2:	// Left Switch  ...and we are in the middle...
-    				if (robotTimer.get() > 1.3 && robotTimer.get() < 4.0) {	// ...and the time is between 0.3 and 1 second(s)...
+    				/*if (robotTimer.get() > 1.3 && robotTimer.get() < 4.0) {	// ...and the time is between 0.3 and 1 second(s)...
     					driveTrain.arcadeDrive(0.7, 0.0);	// ...drive straight at 0.7 speed
     				/*} else if (robotTimer.get() > 1.2 && robotTimer.get() < 3) {	// ...and the time is between 1 and 1.4 seconds...
     					driveTrain.arcadeDrive(0.0, -0.6);	// ...correct the drift
@@ -186,7 +258,30 @@ public class Robot extends IterativeRobot {
     					driveTrain.arcadeDrive(0.7, 0.0);	// ...drive straight at 0.7 speed
     				} else if (robotTimer.get() > 6.1 && robotTimer.get() < 6.2) {
     						gripperSolenoid.set(DoubleSolenoid.Value.kForward);	// ...drop the cube
-    				*/} else {	// ...and is none of the above (more than 5.4 seconds)...
+    				} else {	// ...and is none of the above (more than 5.4 seconds)...
+    					driveTrain.arcadeDrive(0.0, 0.0);	// ...stop
+							*/
+				if(robotTimer.get()>2 && robotTimer.get()<4.7)
+				{
+					driveTrain.arcadeDrive(.6, 0);
+				}else if(robotTimer.get()>4.7 && robotTimer.get()<6.5)
+				{
+					driveTrain.arcadeDrive(0, -6);
+				}else if(robotTimer.get()>6.5 && robotTimer.get()<7.6)
+				{
+					driveTrain.arcadeDrive(.6, 0);
+				}else if(robotTime.get()>7.6 && robotTimer.get()<8.5)
+				{
+					driveTrain.arcadeDrive(0,.6);
+				}else if(robotTimer.get()>8.5 && robotTimer.get()<9)
+				{
+					driveTrain.arcadeDrive(.6,0);
+				}else if(robotTimer.get()>9 && robotTimer.get()<9.1)
+				{
+					gripperSolenoid.set(DoubleSolenoid.Value.kFoward);
+				}
+							
+    				}else {	// ...and is none of the above (more than 5.4 seconds)...
     					driveTrain.arcadeDrive(0.0, 0.0);	// ...stop
     				}
     			break;
